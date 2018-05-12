@@ -13,8 +13,8 @@ enum SymbolType
 class Symbol
 {
 private:
-    SymbolType symbolType;
-    std::string value;
+    const SymbolType symbolType;
+    const std::string value;
 
 public:
     Symbol(const std::string value, const SymbolType symbol);
@@ -23,18 +23,20 @@ public:
     bool isNonterminal() const;
 
     std::string getValue() const;
+
+    bool operator ==(const Symbol &rhs) const;
+    bool operator  <(const Symbol &rhs) const;
 };
 
 class Rule
 {
-private:
-    Symbol head;
-    std::vector<Symbol> tail;
-
-    std::vector<Symbol>::iterator current;
-
 public:
-    Rule(Symbol head, std::vector<Symbol> tail);
+    const Symbol head;
+    const std::vector<Symbol> tail;
+
+    Rule(const Symbol head, const std::vector<Symbol> tail);
+
+    bool operator ==(const Rule &rhs) const;
 };
 
 #endif
