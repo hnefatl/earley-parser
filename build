@@ -1,0 +1,6 @@
+#!/bin/bash
+
+mkdir -p bin
+cd bin
+
+g++ --std=c++14 -I../include ../src/**
