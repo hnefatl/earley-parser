@@ -1,9 +1,8 @@
-#include "earley.h"
+#include "defs.h"
 
 Symbol::Symbol(const std::string value, const SymbolType symbol)
+    :value(value), symbolType(symbol)
 {
-    this->value = value;
-    this->symbolType = symbol;
 }
 bool Symbol::isTerminal() const
 {
@@ -12,4 +11,13 @@ bool Symbol::isTerminal() const
 bool Symbol::isNonterminal() const
 {
     return symbolType == SymbolType::Nonterminal;
+}
+std::string Symbol::getValue() const
+{
+    return value;
+}
+
+Rule::Rule(Symbol head, std::vector<Symbol> tail)
+    :head(head), tail(tail)
+{
 }
