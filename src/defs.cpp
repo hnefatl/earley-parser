@@ -21,12 +21,21 @@ bool Symbol::operator ==(const Symbol &rhs) const
 {
     return symbolType == rhs.symbolType && value == rhs.value;
 }
+bool Symbol::operator !=(const Symbol &rhs) const
+{
+    return !(operator==(rhs));
+}
 bool Symbol::operator <(const Symbol &rhs) const
 {
     if (symbolType != rhs.symbolType)
         return symbolType < rhs.symbolType;
     else
         return value < rhs.value;
+}
+
+std::ostream &operator <<(std::ostream &out, const Symbol &rhs)
+{
+    return out << rhs.getValue();
 }
 
 
@@ -38,4 +47,34 @@ Rule::Rule(Symbol head, std::vector<Symbol> tail)
 bool Rule::operator ==(const Rule &rhs) const
 {
     return head == rhs.head && tail == rhs.tail;
+}
+bool Rule::operator !=(const Rule &rhs) const
+{
+    return !(operator==(rhs));
+}
+bool Rule::operator <(const Rule &rhs) const
+{
+    if (head != rhs.head)
+        return head < rhs.head;
+    else if (tail.size() != rhs.tail.size())
+        return tail.size() < rhs.tail.size();
+    else
+    {
+        for (auto i = 0; i < tail.size(); ++i)
+        {
+            if (tail[i] != rhs.tail[i])
+                return tail[i] < rhs.tail[i];
+        }
+        return false;
+    }
+}
+
+std::ostream &operator <<(std::ostream &out, const Rule &rhs)
+{
+    out << rhs.head << " ->";
+
+    for (const auto &s : rhs.tail)
+        out << " " << s;
+
+    return out;
 }
