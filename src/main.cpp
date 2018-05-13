@@ -8,7 +8,7 @@ Parser makeDemoParser2();
 int main(int argc, char *argv[])
 {
     Parser p = makeDemoParser1();
-    const std::string sentence = "they can fish";
+    const std::string sentence = "they can fish in rivers";
     //const std::string sentence = "she eats a quite fresh fish with a silver fork";
 
     unsigned int interpretations = p.parse(sentence);
@@ -42,7 +42,7 @@ Parser makeDemoParser1()
     rules.emplace_back(VP, std::vector<Symbol> { V });
 
     std::map<Symbol, std::set<std::string>> partsOfSpeech;
-    partsOfSpeech.emplace(N, std::set<std::string>{ "they", "can", "fish", "rivers" });
+    partsOfSpeech.emplace(N, std::set<std::string>{ "they", "can", "fish", "rivers", "December" });
     partsOfSpeech.emplace(P, std::set<std::string>{ "in" });
     partsOfSpeech.emplace(V, std::set<std::string>{ "can", "fish" });
 
