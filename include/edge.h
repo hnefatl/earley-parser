@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <memory>
+#include <ostream>
 
 // An edge "pretty-printed"
 class EdgeString
@@ -14,6 +15,8 @@ public:
     std::string ruleProgress;
     std::string span;
     std::string history;
+
+    friend std::ostream &operator <<(std::ostream &out, const EdgeString &e);
 };
 
 class Edge

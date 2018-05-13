@@ -2,6 +2,11 @@
 
 #include <assert.h>
 
+std::ostream &operator <<(std::ostream &out, const EdgeString &e)
+{
+    return out << e.edgeNumber << " " << e.ruleProgress << " " << e.span << " " << e.history;
+}
+
 Edge::Edge(const unsigned int edgeNumber, const Rule r, const unsigned int start, const unsigned int end)
     : edgeNumber(edgeNumber), rule(r), start(start), end(end)
 {
