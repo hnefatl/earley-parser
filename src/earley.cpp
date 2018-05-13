@@ -158,7 +158,6 @@ void Parser::complete()
     {
         const std::shared_ptr<Edge> e = currentGenEdges.front();
         currentGenEdges.pop();
-        std::cout << e->print() << std::endl << std::endl;
 
         if (!e->completed()) // Only consider completed edges
             continue;
@@ -166,22 +165,14 @@ void Parser::complete()
         const auto &completeableEdges = edges.at(e->getStart());
         for (const auto ce : completeableEdges)
         {
-            std::cout << ce->print() << std::endl;
-
-            if (edgeNumber > 44)
-                std::cout << "d" << std::endl;
             // The edge we're trying to complete doesn't need this nonterminal yet
             if (ce->completed() || ce->nextSymbol() != e->getHead())
                 continue;
 
-            if (edgeNumber > 44)
-                std::cout << "e" << std::endl;
             // We can't match these edges together as they don't actually line up in the sentence
             if (ce->getEnd() != e->getStart())
                 continue;
 
-            if (edgeNumber > 44)
-                std::cout << "f" << std::endl;
             // Make a copy of the edge we're going to complete a nonterminal for
             std::shared_ptr<Edge> newEdge = ce->copy(edgeNumber);
             newEdge->completeNonterminal(e); // Log which edge completed this new edge
