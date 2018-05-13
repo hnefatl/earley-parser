@@ -16,6 +16,9 @@ std::shared_ptr<Edge> Edge::copy(const unsigned int edgeNumber) const
     const auto d = std::distance(rule.tail.begin(), rulePosition);
     std::advance(e->rulePosition, d);
 
+    // Copy the history as well
+    e->history = history;
+
     return e;
 }
 
@@ -43,7 +46,14 @@ void Edge::feedTerminal()
 }
 void Edge::completeNonterminal(const std::shared_ptr<Edge> completingEdge)
 {
-    // Still not sure how to engineer this bit
+    // The two edges need to make a chain
+    assert(getEnd() == completingEdge->getStart());
+
+    // Remember that this nonterminal was completed by the edge
+    history.push_back(completingEdge);
+    // Move the end along as this edge now encapsulates the completing edge
+    end = completingEdge->getEnd();
+    // Consume the nonterminal that was completed
     ++rulePosition;
 }
 
@@ -93,21 +103,42 @@ bool Edge::operator ==(const Edge &rhs) const
            history == rhs.history;
 }
 
-std::ostream &operator <<(std::ostream &out, const Edge &rhs)
+EdgeString Edge::print() const
 {
-    out << rhs.edgeNumber << ": " << rhs.rule.head << " ->";
+    EdgeString out;
+    out.edgeNumber = "e" + std::to_string(edgeNumber);
 
+    out.ruleProgress = rule.head.getValue() + " ->";
     // Output the tail symbols with a dot before the current symbol
-    for (auto i = rhs.rule.tail.begin(); i != rhs.rule.tail.end(); ++i)
+    for (auto i = rule.tail.begin(); i != rule.tail.end(); ++i)
     {
-        if (rhs.rulePosition == i)
-            out << " .";
-        out << " " << *i;
+        if (rulePosition == i)
+            out.ruleProgress += " .";
+        out.ruleProgress += " " + i->getValue();
     }
-    if (rhs.rulePosition == rhs.rule.tail.end())
-        out << " .";
+    if (rulePosition == rule.tail.end())
+        out.ruleProgress += " .";
 
-    out << "\t(" << rhs.start << "," << rhs.end << ")" << "\tHistory";
+    out.span = "(" + std::to_string(start) + "," + std::to_string(end) + ")";
+
+    if (history.empty())
+        out.history = "";
+    else
+    {
+        auto hi = history.begin(); // History iterator
+        auto ti = rule.tail.begin(); // Tail iterator
+        out.history = "(";
+        for (ti; ti != rule.tail.end(); ++ti)
+        {
+            if (ti->isNonterminal() && hi != history.end())
+            {
+                out.history += "e" + std::to_string((**hi).edgeNumber) + ","; // Dereference iterator then edge pointer
+                ++hi; // Move history iterator to the next nonterminal we completed
+            }
+        }
+        // Replace the trailing comma with a close bracket
+        out.history.back() = ')';
+    }
 
     return out;
 }

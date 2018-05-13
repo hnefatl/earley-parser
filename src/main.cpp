@@ -10,8 +10,10 @@ int main(int argc, char *argv[])
 
     bool success = p.parse("they can fish");
 
-    std::cout << "Parsed Successfully: " << (success ? "true" : "false") << std::endl << std::endl;
     p.printChart();
+
+    std::cout << std::endl << std::endl;
+    std::cout << "Parsed Successfully: " << (success ? "true" : "false") << std::endl;
 
     return 0;
 }
@@ -23,8 +25,8 @@ Parser makeDemoParser()
     Symbol VP("VP", SymbolType::Nonterminal);
     Symbol PP("PP", SymbolType::Nonterminal);
     Symbol N("N", SymbolType::Nonterminal);
-    Symbol V("N", SymbolType::Nonterminal);
-    Symbol P("N", SymbolType::Nonterminal);
+    Symbol V("V", SymbolType::Nonterminal);
+    Symbol P("P", SymbolType::Nonterminal);
 
     std::vector<Rule> rules;
     rules.emplace_back(S,  std::vector<Symbol> { NP, VP });

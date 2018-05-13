@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <queue>
 
@@ -47,9 +48,6 @@ bool Parser::parse(const std::vector<std::string> &words)
     auto currentWord = words.begin();
     while (currentWord != words.end())
     {
-        printChart();
-        std::cout << std::endl;
-
         predict();
 
         // Insert new empty set of edges
@@ -63,10 +61,14 @@ bool Parser::parse(const std::vector<std::string> &words)
 
     // Check if we parsed successfully
     const auto &lastSet = edges.back();
-    const auto completeParse = std::find_if(lastSet.begin(), lastSet.end(),
-                    [this](const auto e) { return e->getHead() == startSymbol && e->completed(); });
+    std::vector<std::shared_ptr<Edge>> completeParses;
+    for (const auto e : lastSet)
+    {
+        if (e->getHead() == startSymbol && e->completed() && e->getStart() == 0 && e->getEnd() == words.size())
+            completeParses.push_back(e);
+    }
 
-    return completeParse != lastSet.end();
+    return completeParses.size() > 0;
 }
 
 void Parser::predict()
@@ -90,7 +92,11 @@ void Parser::predict()
             continue;
 
         for (const auto &r : ruleIt->second)
-            lastGen.insert(std::make_shared<Edge>(nextEdgeNumber(), r, e->getEnd(), e->getEnd()));
+        {
+            bool alreadyExisted = !lastGen.insert(std::make_shared<Edge>(edgeNumber, r, e->getEnd(), e->getEnd())).second;
+            if (!alreadyExisted)
+                ++edgeNumber;
+        }
     }
 }
 void Parser::scan(const std::vector<std::string>::const_iterator currentWord)
@@ -163,11 +169,19 @@ void Parser::complete()
             if (ce->completed() || ce->nextSymbol() != e->getHead())
                 continue;
 
+            // We can't match these edges together as they don't actually line up in the sentence
+            if (ce->getEnd() != e->getStart())
+                continue;
+
             // Make a copy of the edge we're going to complete a nonterminal for
-            std::shared_ptr<Edge> newEdge = ce->copy(nextEdgeNumber());
+            std::shared_ptr<Edge> newEdge = ce->copy(edgeNumber);
             newEdge->completeNonterminal(e); // Log which edge completed this new edge
-            currentGen.insert(newEdge);
-            currentGenEdges.push(newEdge);
+            bool alreadyExisted = !currentGen.insert(newEdge).second;
+            if (!alreadyExisted)
+            {
+                ++edgeNumber;
+                currentGenEdges.push(newEdge);
+            }
         }
     }
 }
@@ -178,10 +192,11 @@ void Parser::printChart() const
 }
 void Parser::printChart(std::ostream &out) const
 {
-    unsigned int wordCount = 0;
+    std::vector<std::vector<EdgeString>> chart;
+
     for (const auto &es : edges)
     {
-        out << "Word " << wordCount++ << std::endl;
+        chart.push_back({});
 
         // Sort the edges by edgeNumber
         std::vector<std::shared_ptr<Edge>> sorted(es.begin(), es.end());
@@ -189,6 +204,34 @@ void Parser::printChart(std::ostream &out) const
             [](const auto e1, const auto e2) { return e1->getEdgeNumber() < e2->getEdgeNumber(); });
 
         for (const auto e : sorted)
-            out << *e << std::endl;
+            chart.back().push_back(e->print());
+    }
+
+    std::size_t edgeNumberWidth = 0, ruleWidth = 0, spanWidth = 0, historyWidth = 0;
+    for (const auto &generation : chart)
+    {
+        for (const auto &edge : generation)
+        {
+            edgeNumberWidth = std::max(edgeNumberWidth, edge.edgeNumber.size());
+            ruleWidth = std::max(ruleWidth, edge.ruleProgress.size());
+            spanWidth = std::max(spanWidth, edge.span.size());
+            historyWidth = std::max(historyWidth, edge.history.size());
+        }
+    }
+
+    unsigned int wordCount = 0;
+    const std::string spacing = "    ";
+
+    out << std::left; // Left align output
+    for (const auto &generation : chart)
+    {
+        out << "Word " << wordCount++ << std::endl;
+        for (const auto &edge : generation)
+        {
+            out << std::setw(edgeNumberWidth) << edge.edgeNumber << spacing;
+            out << std::setw(ruleWidth) << edge.ruleProgress << spacing;
+            out << std::setw(spanWidth) << edge.span << spacing;
+            out << std::setw(historyWidth) << edge.history << std::endl;
+        }
     }
 }

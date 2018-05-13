@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <string>
-#include <ostream>
 
 enum SymbolType
 {
@@ -28,8 +27,6 @@ public:
     bool operator ==(const Symbol &rhs) const;
     bool operator !=(const Symbol &rhs) const;
     bool operator  <(const Symbol &rhs) const;
-
-    friend std::ostream &operator <<(std::ostream &out, const Symbol &rhs);
 };
 
 class Rule
@@ -43,8 +40,6 @@ public:
     bool operator ==(const Rule &rhs) const;
     bool operator !=(const Rule &rhs) const;
     bool operator  <(const Rule &rhs) const;
-
-    friend std::ostream &operator <<(std::ostream &out, const Rule &rhs);
 };
 
 #endif

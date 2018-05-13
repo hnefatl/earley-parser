@@ -6,6 +6,16 @@
 #include <vector>
 #include <memory>
 
+// An edge "pretty-printed"
+class EdgeString
+{
+public:
+    std::string edgeNumber;
+    std::string ruleProgress;
+    std::string span;
+    std::string history;
+};
+
 class Edge
 {
 private:
@@ -16,7 +26,7 @@ private:
     unsigned int start;
     unsigned int end;
 
-    std::vector<std::vector<const Edge *>> history;
+    std::vector<std::shared_ptr<Edge>> history;
 
 public:
     Edge(const unsigned int edgeNumber, const Rule r, const unsigned int start, const unsigned int end);
@@ -36,11 +46,11 @@ public:
 
     unsigned int getEdgeNumber() const;
 
+    EdgeString print() const;
+
     bool operator  <(const Edge &rhs) const;
     bool operator ==(const Edge &rhs) const;
     void operator  =(const Edge &rhs) = delete;
-
-    friend std::ostream &operator <<(std::ostream &out, const Edge &rhs);
 };
 
 // Lets us store sets of pointers to edges, with order checked using the edges not the pointers

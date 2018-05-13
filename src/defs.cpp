@@ -33,11 +33,6 @@ bool Symbol::operator <(const Symbol &rhs) const
         return value < rhs.value;
 }
 
-std::ostream &operator <<(std::ostream &out, const Symbol &rhs)
-{
-    return out << rhs.getValue();
-}
-
 
 Rule::Rule(Symbol head, std::vector<Symbol> tail)
     : head(head), tail(tail)
@@ -67,14 +62,4 @@ bool Rule::operator <(const Rule &rhs) const
         }
         return false;
     }
-}
-
-std::ostream &operator <<(std::ostream &out, const Rule &rhs)
-{
-    out << rhs.head << " ->";
-
-    for (const auto &s : rhs.tail)
-        out << " " << s;
-
-    return out;
 }
