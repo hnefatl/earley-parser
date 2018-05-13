@@ -8,12 +8,12 @@ int main(int argc, char *argv[])
 {
     Parser p = makeDemoParser();
 
-    bool success = p.parse("they can fish");
+    unsigned int interpretations = p.parse("they can fish");
 
     p.printChart();
 
-    std::cout << std::endl << std::endl;
-    std::cout << "Parsed Successfully: " << (success ? "true" : "false") << std::endl;
+    std::cout << std::endl;
+    std::cout << "Possible interpretations: " << interpretations << std::endl;
 
     return 0;
 }

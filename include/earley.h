@@ -33,8 +33,8 @@ public:
     Parser(const Symbol startSymbol, const std::vector<Rule> rules,
            const std::map<Symbol, std::set<std::string>> partsOfSpeech);
 
-    bool parse(const std::string &sentence);
-    bool parse(const std::vector<std::string> &words);
+    unsigned int parse(const std::string &sentence);
+    unsigned int parse(const std::vector<std::string> &words);
 
     void printChart() const;
     void printChart(std::ostream &out) const;

@@ -24,7 +24,7 @@ std::map<Symbol, std::vector<Rule>> Parser::makeRuleMapping(const std::vector<Ru
     return mapping;
 }
 
-bool Parser::parse(const std::string &sentence)
+unsigned int Parser::parse(const std::string &sentence)
 {
     std::vector<std::string> tokens;
     std::stringstream ss(sentence);
@@ -35,7 +35,7 @@ bool Parser::parse(const std::string &sentence)
 
     return parse(tokens);
 }
-bool Parser::parse(const std::vector<std::string> &words)
+unsigned int Parser::parse(const std::vector<std::string> &words)
 {
     // Initialise the new edge chart
     const auto startRule = rules.at(startSymbol).front();
@@ -68,7 +68,7 @@ bool Parser::parse(const std::vector<std::string> &words)
             completeParses.push_back(e);
     }
 
-    return completeParses.size() > 0;
+    return completeParses.size();
 }
 
 void Parser::predict()
