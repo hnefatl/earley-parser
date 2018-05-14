@@ -66,6 +66,9 @@ unsigned int Parser::parse(const std::vector<std::string> &words)
     {
         if (e->getHead() == startSymbol && e->completed() && e->getStart() == 0 && e->getEnd() == words.size())
             completeParses.push_back(e);
+
+
+        // Regenerate parse trees, demonstrate ambiguity etc
     }
 
     return completeParses.size();
