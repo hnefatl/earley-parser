@@ -133,7 +133,7 @@ EdgeString Edge::print() const
         auto hi = history.begin(); // History iterator
         auto ti = rule.tail.begin(); // Tail iterator
         out.history = "(";
-        for (ti; ti != rule.tail.end(); ++ti)
+        for (; ti != rule.tail.end(); ++ti)
         {
             if (ti->isNonterminal() && hi != history.end())
             {

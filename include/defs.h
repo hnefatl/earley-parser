@@ -13,8 +13,8 @@ enum SymbolType
 class Symbol
 {
 private:
-    const SymbolType symbolType;
     const std::string value;
+    const SymbolType symbolType;
 
 public:
     Symbol(const std::string value, const SymbolType symbol);

@@ -55,7 +55,7 @@ bool Rule::operator <(const Rule &rhs) const
         return tail.size() < rhs.tail.size();
     else
     {
-        for (auto i = 0; i < tail.size(); ++i)
+        for (std::size_t i = 0; i < tail.size(); ++i)
         {
             if (tail[i] != rhs.tail[i])
                 return tail[i] < rhs.tail[i];
